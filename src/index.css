@@ -1,0 +1,107 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);  /* Subtle gradient */
+  color: #333;
+  min-height: 100vh;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Form & Card Styles */
+form, .card-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);  /* Soft shadow */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 1rem 0;
+}
+
+form:hover, .card-form:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.MuiTextField-root, .MuiFormControl-root {
+  margin-bottom: 1.5rem;
+}
+
+.MuiButton-contained {
+  background: linear-gradient(45deg, #1976d2 30%, #42a5f5 90%);
+  border-radius: 8px;
+  text-transform: none;
+  font-weight: 500;
+  box-shadow: 0 3px 5px 2px rgba(25, 118, 210, 0.3);
+  transition: all 0.2s ease;
+}
+
+.MuiButton-contained:hover {
+  box-shadow: 0 5px 10px 3px rgba(25, 118, 210, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Tables (DataGrid) */
+.MuiDataGrid-root {
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  form, .card-form {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+  
+  .MuiContainer-root {
+    padding: 0.5rem !important;
+  }
+  
+  .dashboard-card {
+    margin: 0.5rem;
+  }
+}
+
+/* Loading & Empty States */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: #666;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem;
+  color: #666;
+}
+
+/* Toasts */
+.Toastify__toast {
+  border-radius: 8px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
