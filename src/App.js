@@ -13,7 +13,9 @@ import NgoListPage from "./pages/ngos/NgoListPage";
 import ProjectListPage from "./pages/projects/ProjectListPage";
 import ProjectDetailPage from "./pages/projects/ProjectDetailPage";
 import UserListPage from "./pages/users/UserListPage";
+import DonorListPage from "./pages/donors/DonorListPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import ActivityListPage from "./pages/activity/ActivityListPage";
 
 function App() {
     return (
@@ -51,7 +53,9 @@ function App() {
                     <Route element={<DefaultLayout />}>
                         <Route path="/dashboard" element={<DashboardPage />} />
                         <Route path="/ngos" element={<NgoListPage />} />
+                        <Route path="/activities" element={<ActivityListPage />} />
                         <Route path="/projects" element={<ProjectListPage />} />
+                        <Route path="/donors" element={<DonorListPage />} />
                         <Route
                             path="/projects/:id"
                             element={<ProjectDetailPage />}

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getUsers, registerUser, updateUser } from "../../services/userService";
+import { getUsers, registerUser, updateUser, activateUser } from "../../services/userService";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import Button from "../../components/common/Button";
 import Modal from "../../components/common/Modal";
-import { FaEdit, FaPlus } from "react-icons/fa";
+import { FaEdit, FaPlus, FaCheck } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
-import "./UserListPage.css"; // We'll add this file below
+import "./UserListPage.css";
 
 const UserListPage = () => {
     const [users, setUsers] = useState([]);
@@ -17,6 +17,8 @@ const UserListPage = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [formData, setFormData] = useState({ name: "", email: "", role: "" });
     const [submitting, setSubmitting] = useState(false);
+    const [showActivateModal, setShowActivateModal] = useState(false);
+    
 
     const fetchUsers = async () => {
         try {
@@ -87,6 +89,21 @@ const UserListPage = () => {
             console.error(err);
         } finally {
             setSubmitting(false);
+        }
+    };
+      const handleOpenActivate = (user) => {
+        setCurrentUser(user);
+        setShowActivateModal(true);
+    };
+
+    const handleSubmitActivate = async (id) => {
+        try {
+            await activateUser(id);
+            toast.success("User activated successfully!");
+            fetchUsers();
+        } catch (err) {
+            toast.error("Failed to activate user.");
+            console.error(err);
         }
     };
 
@@ -166,6 +183,13 @@ const UserListPage = () => {
                                             >
                                                 <FaEdit />
                                             </button>
+                                            <button
+                                                onClick={() => handleOpenActivate(user)}
+                                                className="action-btn activate-btn"
+                                                title="Activate user"
+                                            >
+                                                <FaCheck />
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -239,7 +263,6 @@ const UserListPage = () => {
                             required
                         />
                         
-                        {/* ← THIS IS THE NEW DROPDOWN FOR ROLE */}
                         <select
                             value={formData.role}
                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
@@ -257,6 +280,25 @@ const UserListPage = () => {
                             </button>
                             <button type="submit" className="btn-primary" disabled={submitting}>
                                 {submitting ? "Updating..." : "Update User"}
+                            </button>
+                        </div>
+                    </form>
+                </Modal>
+
+                {/* Activate User Modal */}
+                <Modal
+                    open={showActivateModal}
+                    title="Activate User"
+                    onClose={() => setShowActivateModal(false)}
+                >
+                    <form onSubmit={(e) => { e.preventDefault(); handleSubmitActivate(currentUser._id); }} className="modal-form">
+                        <p>Are you sure you want to activate this user?</p>
+                        <div className="modal-actions">
+                            <button type="button" className="btn-secondary" onClick={() => setShowActivateModal(false)}>
+                                Cancel
+                            </button>
+                            <button type="submit" className="btn-primary" disabled={submitting}>
+                                {submitting ? "Activating..." : "Activate User"}
                             </button>
                         </div>
                     </form>

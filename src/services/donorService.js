@@ -10,16 +10,31 @@ export const getDonorById = async (id) => {
 };
 
 export const createDonor = async (donorData) => {
-    const response = await api.post("/donors", donorData);
+    const token = localStorage.getItem("token");
+    const response = await api.post("/donors", donorData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
     return response.data;
 };
 
 export const updateDonor = async (id, donorData) => {
-    const response = await api.put(`/donors/${id}`, donorData);
+    const token = localStorage.getItem("token");
+    const response = await api.put(`/donors/${id}`, donorData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
     return response.data;
 };
 
 export const deleteDonor = async (id) => {
-    const response = await api.delete(`/donors/${id}`);
+    const token = localStorage.getItem("token");
+    const response = await api.delete(`/donors/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
     return response.data;
 };

@@ -3,9 +3,9 @@ import { NavLink } from "react-router-dom";
 import {
     FaTachometerAlt,
     FaUsers,
-    FaProjectDiagram,
     FaHandsHelping,
     FaUserFriends,
+    FaProjectDiagram,
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -13,7 +13,7 @@ const Sidebar = () => {
         { to: "/dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
         { to: "/ngos", label: "NGOs", icon: <FaHandsHelping /> },
         { to: "/projects", label: "Projects", icon: <FaProjectDiagram /> },
-        { to: "/donors", label: "Donors", icon: <FaUserFriends /> }, // replaced FaDonor
+        { to: "/donors", label: "Donors", icon: <FaUserFriends /> }, 
         { to: "/users", label: "Users", icon: <FaUsers /> },
     ];
 
