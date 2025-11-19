@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getUsers, registerUser, updateUser } from "../../services/userService"; // Assume user service with updateUser
+import { getUsers, registerUser, updateUser } from "../../services/userService";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import Button from "../../components/common/Button";
 import Modal from "../../components/common/Modal";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { FaEdit, FaPlus } from "react-icons/fa";
+import toast, { Toaster } from "react-hot-toast";
+import "./UserListPage.css"; // We'll add this file below
 
 const UserListPage = () => {
     const [users, setUsers] = useState([]);
@@ -16,7 +18,6 @@ const UserListPage = () => {
     const [formData, setFormData] = useState({ name: "", email: "", role: "" });
     const [submitting, setSubmitting] = useState(false);
 
-    // Fetch users
     const fetchUsers = async () => {
         try {
             setError("");
@@ -51,16 +52,18 @@ const UserListPage = () => {
 
     const handleSubmitAdd = async () => {
         if (!formData.name || !formData.email || !formData.role) {
-            alert("Please fill in all fields.");
+            toast.error("Please fill all fields");
             return;
         }
+
         setSubmitting(true);
         try {
             await registerUser(formData);
+            toast.success("User created successfully!");
             setShowAddModal(false);
             fetchUsers();
         } catch (err) {
-            alert("Failed to create user.");
+            toast.error("Failed to create user.");
             console.error(err);
         } finally {
             setSubmitting(false);
@@ -69,194 +72,28 @@ const UserListPage = () => {
 
     const handleSubmitEdit = async () => {
         if (!formData.name || !formData.email || !formData.role) {
-            alert("Please fill in all fields.");
+            toast.error("Please fill in all fields.");
             return;
         }
+
         setSubmitting(true);
         try {
             await updateUser(currentUser._id, formData);
+            toast.success("User updated successfully!");
             setShowEditModal(false);
             fetchUsers();
         } catch (err) {
-            alert("Failed to update user.");
+            toast.error("Failed to update user.");
             console.error(err);
         } finally {
             setSubmitting(false);
         }
     };
 
-    const addForm = (
-        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-            <input
-                type="text"
-                placeholder="Name"
-                value={formData.name}
-                onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                }
-                style={{
-                    padding: "10px",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "6px",
-                    fontSize: "1rem",
-                }}
-            />
-            <input
-                type="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                }
-                style={{
-                    padding: "10px",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "6px",
-                    fontSize: "1rem",
-                }}
-            />
-            <input
-                type="text"
-                placeholder="Role"
-                value={formData.role}
-                onChange={(e) =>
-                    setFormData({ ...formData, role: e.target.value })
-                }
-                style={{
-                    padding: "10px",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "6px",
-                    fontSize: "1rem",
-                }}
-            />
-            <div
-                style={{
-                    display: "flex",
-                    gap: "10px",
-                    justifyContent: "flex-end",
-                }}
-            >
-                <button
-                    onClick={() => setShowAddModal(false)}
-                    style={{
-                        background: "#6c757d",
-                        color: "white",
-                        border: "none",
-                        padding: "10px 15px",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                    }}
-                >
-                    Cancel
-                </button>
-                <button
-                    onClick={handleSubmitAdd}
-                    disabled={submitting}
-                    style={{
-                        background: "#28a745",
-                        color: "white",
-                        border: "none",
-                        padding: "10px 15px",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                        opacity: submitting ? 0.7 : 1,
-                    }}
-                >
-                    {submitting ? "Saving..." : "Save"}
-                </button>
-            </div>
-        </div>
-    );
-
-    const editForm = (
-        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-            <input
-                type="text"
-                placeholder="Name"
-                value={formData.name}
-                onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                }
-                style={{
-                    padding: "10px",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "6px",
-                    fontSize: "1rem",
-                }}
-            />
-            <input
-                type="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                }
-                style={{
-                    padding: "10px",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "6px",
-                    fontSize: "1rem",
-                }}
-            />
-            <input
-                type="text"
-                placeholder="Role"
-                value={formData.role}
-                onChange={(e) =>
-                    setFormData({ ...formData, role: e.target.value })
-                }
-                style={{
-                    padding: "10px",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "6px",
-                    fontSize: "1rem",
-                }}
-            />
-            <div
-                style={{
-                    display: "flex",
-                    gap: "10px",
-                    justifyContent: "flex-end",
-                }}
-            >
-                <button
-                    onClick={() => setShowEditModal(false)}
-                    style={{
-                        background: "#6c757d",
-                        color: "white",
-                        border: "none",
-                        padding: "10px 15px",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                    }}
-                >
-                    Cancel
-                </button>
-                <button
-                    onClick={handleSubmitEdit}
-                    disabled={submitting}
-                    style={{
-                        background: "#007bff",
-                        color: "white",
-                        border: "none",
-                        padding: "10px 15px",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                        opacity: submitting ? 0.7 : 1,
-                    }}
-                >
-                    {submitting ? "Updating..." : "Update"}
-                </button>
-            </div>
-        </div>
-    );
-
     if (loading) {
         return (
             <div className="user-list-container">
-                <div className="loading-container">
-                    <LoadingSpinner />
-                </div>
+                <LoadingSpinner />
             </div>
         );
     }
@@ -264,252 +101,169 @@ const UserListPage = () => {
     if (error) {
         return (
             <div className="user-list-container">
-                <div className="error-container">
-                    <p className="error-message">{error}</p>
-                </div>
+                <div className="error-message">{error}</div>
             </div>
         );
     }
 
     return (
-        <div className="user-list-container">
-            <h1 className="page-titles">Users</h1>
-            <div className="button-section">
-                <Button onClick={handleOpenAdd}><FaPlus /> Add New User</Button>
-            </div>
-            {users.length === 0 ? (
-                <p className="empty-message">No users found.</p>
-            ) : (
-                <div className="table-container">
-                    <table className="user-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Created At</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map((user, index) => (
-                                <tr key={user._id}>
-                                    <td>{index + 1}</td>
-                                    <td>
-                                        <Link
-                                            to={`/users/${user._id}`}
-                                            className="user-link"
-                                        >
-                                            {user.name}
-                                        </Link>
-                                    </td>
-                                    <td>{user.email}</td>
-                                    <td>
-                                        <span className="role-badge">
-                                            {user.role?.name || "N/A"}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {new Date(
-                                            user.createdAt
-                                        ).toLocaleDateString("en-US", {
-                                            year: "numeric",
-                                            month: "short",
-                                            day: "numeric",
-                                        })}
-                                    </td>
-                                    <td className="actions-cell">
-                                        <button
-                                            onClick={() => handleOpenEdit(user)}
-                                            className="edit-link"
-                                            title="Edit User"
-                                        >
-                                            <FaEdit />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+        <>
+            <Toaster position="top-right" />
+
+            <div className="user-list-container">
+                <div className="page-header">
+                    <h1 className="page-title">Users Management</h1>
+                    <Button onClick={handleOpenAdd} variant="primary">
+                        <FaPlus className="icon" /> Add New User
+                    </Button>
                 </div>
-            )}
-            <Modal
-                open={showAddModal}
-                title="Add New User"
-                children={addForm}
-                onClose={() => setShowAddModal(false)}
-            />
-            <Modal
-                open={showEditModal}
-                title="Edit User"
-                children={editForm}
-                onClose={() => setShowEditModal(false)}
-            />
-        </div>
+
+                {users.length === 0 ? (
+                    <div className="empty-state">
+                        <p>No users found.</p>
+                        <Button onClick={handleOpenAdd}>Create your first user</Button>
+                    </div>
+                ) : (
+                    <div className="table-wrapper">
+                        <table className="user-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Created At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {users.map((user, index) => (
+                                    <tr key={user._id}>
+                                        <td>{index + 1}</td>
+                                        <td>
+                                            <Link to={`/users/${user._id}`} className="user-link">
+                                                {user.name}
+                                            </Link>
+                                        </td>
+                                        <td>{user.email}</td>
+                                        <td>
+                                            <span className={`role-badge role-${(user.role?.name || "user").toLowerCase()}`}>
+                                                {user.role?.name || "User"}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {new Date(user.createdAt).toLocaleDateString("en-US", {
+                                                year: "numeric",
+                                                month: "short",
+                                                day: "2-digit",
+                                            })}
+                                        </td>
+                                        <td>
+                                            <button
+                                                onClick={() => handleOpenEdit(user)}
+                                                className="action-btn edit-btn"
+                                                title="Edit user"
+                                            >
+                                                <FaEdit />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+                {/* Add User Modal */}
+                <Modal
+                    open={showAddModal}
+                    title="Add New User"
+                    onClose={() => setShowAddModal(false)}
+                >
+                    <form onSubmit={(e) => { e.preventDefault(); handleSubmitAdd(); }} className="modal-form">
+                        <input
+                            type="text"
+                            placeholder="Full Name"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            required
+                        />
+                        <input
+                            type="email"
+                            placeholder="Email Address"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            required
+                        />
+                        <select
+                            value={formData.role}
+                            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                            required
+                        >
+                            <option value="">Select Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="manager">Manager</option>
+                            <option value="user">User</option>
+                        </select>
+
+                        <div className="modal-actions">
+                            <button type="button" className="btn-secondary" onClick={() => setShowAddModal(false)}>
+                                Cancel
+                            </button>
+                            <button type="submit" className="btn-primary" disabled={submitting}>
+                                {submitting ? "Creating..." : "Create User"}
+                            </button>
+                        </div>
+                    </form>
+                </Modal>
+
+               {/* Edit User Modal */}
+                <Modal
+                    open={showEditModal}
+                    title="Edit User"
+                    onClose={() => setShowEditModal(false)}
+                >
+                    <form onSubmit={(e) => { e.preventDefault(); handleSubmitEdit(); }} className="modal-form">
+                        <input
+                            type="text"
+                            placeholder="Full Name"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            required
+                        />
+                        <input
+                            type="email"
+                            placeholder="Email Address"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            required
+                        />
+                        
+                        {/* ← THIS IS THE NEW DROPDOWN FOR ROLE */}
+                        <select
+                            value={formData.role}
+                            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                            required
+                        >
+                            <option value="">Select Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="manager">Manager</option>
+                            <option value="user">User</option>
+                        </select>
+
+                        <div className="modal-actions">
+                            <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>
+                                Cancel
+                            </button>
+                            <button type="submit" className="btn-primary" disabled={submitting}>
+                                {submitting ? "Updating..." : "Update User"}
+                            </button>
+                        </div>
+                    </form>
+                </Modal>
+            </div>
+        </>
     );
 };
-
-const globalStyles = `
-    .user-list-container {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        min-height: 100vh;
-        padding: 20px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-    }
-    .page-title {
-        color: #212529;
-        font-size: 2.5rem;
-        font-weight: 300;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-    .button-section {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 30px;
-    }
-    .table-container {
-        background-color: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        overflow-x: auto;
-        border: 1px solid #e9ecef;
-    }
-    .user-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0;
-    }
-    .user-table thead th {
-        background-color: #f8f9fa;
-        color: #495057;
-        font-weight: 600;
-        padding: 16px 12px;
-        text-align: left;
-        border-bottom: 2px solid #dee2e6;
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .user-table tbody td {
-        padding: 16px 12px;
-        border-bottom: 1px solid #dee2e6;
-        color: #6c757d;
-        font-size: 0.95rem;
-    }
-    .user-table tbody tr:hover {
-        background-color: #f8f9fa;
-        transition: background-color 0.2s ease;
-    }
-    .user-table tbody tr:nth-child(even) {
-        background-color: #fafbfc;
-    }
-    .user-link {
-        color: #007bff;
-        text-decoration: none;
-        font-weight: 600;
-    }
-    .user-link:hover {
-        color: #0056b3;
-        text-decoration: underline;
-    }
-    .role-badge {
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        background-color: #e9ecef;
-        color: #495057;
-    }
-    .actions-cell {
-        text-align: center;
-        white-space: nowrap;
-    }
-    .edit-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        color: #6c757d;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        background-color: #fff;
-        cursor: pointer;
-        border: none;
-    }
-    .edit-link:hover {
-        background-color: #e3f2fd;
-        color: #007bff;
-        border-color: #007bff;
-        transform: scale(1.05);
-    }
-    .empty-message {
-        text-align: center;
-        color: #6c757d;
-        font-size: 1.1rem;
-        margin-top: 40px;
-        padding: 20px;
-    }
-    .loading-container,
-    .error-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 50vh;
-    }
-    .error-message {
-        color: #dc3545;
-        font-size: 1.2rem;
-        text-align: center;
-        padding: 20px;
-    }
-    @media (max-width: 768px) {
-        .user-list-container {
-            padding: 10px;
-        }
-        .page-title {
-            font-size: 2rem;
-        }
-        .user-table thead th,
-        .user-table tbody td {
-            padding: 12px 8px;
-            font-size: 0.9rem;
-        }
-        .button-section {
-            margin-bottom: 20px;
-        }
-        .edit-link {
-            width: 28px;
-            height: 28px;
-        }
-        .role-badge {
-            font-size: 0.75rem;
-            padding: 3px 6px;
-        }
-    }
-    @media (max-width: 480px) {
-        .page-title {
-            font-size: 1.8rem;
-        }
-        .empty-message {
-            font-size: 1rem;
-        }
-        .user-table {
-            font-size: 0.85rem;
-        }
-    }
-`;
-
-if (typeof document !== "undefined") {
-    const styleSheet = document.createElement("style");
-    styleSheet.type = "text/css";
-    styleSheet.innerText = globalStyles;
-    document.head.appendChild(styleSheet);
-}
 
 export default UserListPage;

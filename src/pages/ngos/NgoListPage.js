@@ -263,7 +263,7 @@ const NgoListPage = () => {
                             {ngos.map((ngo, index) => (
                                 <tr key={ngo._id}>
                                     <td>{index + 1}</td>
-                                    <td style={{ color: "red" }}>
+                                    <td style={{ color: "blue" }}>
                                         <Link to={`/ngos/${ngo._id}`}>{ngo.name}</Link>
                                     </td>
                                     <td>{ngo.address}</td>
