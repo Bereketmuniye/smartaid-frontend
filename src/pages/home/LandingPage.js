@@ -1,6 +1,6 @@
 import React from "react"; // Only one React import needed here
 import { Link } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 import Button from "../../components/common/Button"; 
 import Navbar from "../../components/layouts/Navbar";
 import FeatureCard from "../../components/common/FeatureCard";

@@ -8,8 +8,10 @@ import Modal from "../../components/common/Modal";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
 import "./NgoListPage.css";
+import { useAuth } from "../../contexts/AuthContext";
 
 const NgoListPage = () => {
+  const { user } = useAuth();
   const [ngos, setNgos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -23,7 +25,7 @@ const NgoListPage = () => {
     try {
       setError("");
       const data = await getNGOs();
-      setNgos(data);
+      setNgos(data.data);
     } catch (err) {
       setError("Failed to fetch NGOs.");
       console.error(err);
@@ -56,7 +58,11 @@ const NgoListPage = () => {
     }
     setSubmitting(true);
     try {
-      await createNGO(formData);
+        const dataToSend = {
+        ...formData,
+        user: user?._id,
+      };
+      await createNGO(dataToSend);
       toast.success("NGO created successfully!");
       setShowAddModal(false);
       fetchNgos();

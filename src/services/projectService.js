@@ -20,6 +20,12 @@ export const getProjectById = async (id) => {
     }
 };
 
+
+export const getProjectsByUserId = async (userId) => {
+    const response = await api.get(`/projects/user/${userId}`);
+    return response.data;
+};
+
 export const createProject = async (projectData) => {
     const token = localStorage.getItem("authToken");
     if (token) {
@@ -129,13 +135,13 @@ export const updateActivity = async (projectId, activityId, activityData) => {
         throw error;
     }
 };
-export const getBudgets = async (params) => {
+export const getBudgets = async (params = {}) => {
     const token = localStorage.getItem("authToken");
     if (token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
     try {
-    const response = await api.get(`/projects/${params.projectId}/budgets?projectId=${params.projectId}`, {
+    const response = await api.get(`/projects/${params.projectId}/budgets`, {
         headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json", 
@@ -144,55 +150,52 @@ export const getBudgets = async (params) => {
     });
     return response.data;
     } catch (error) {
-        console.error("Get budgets error:", error.response?.data || error);
+        console.error("Get budgets error:", error?.message || error);
         throw error;
     }
 };
+
+
 export const createBudget = async (budgetData) => {
   const token = localStorage.getItem("authToken");
   if (token) {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }
 
-  const { project } = budgetData;
+  const { project_id } = budgetData;
 
-  if (!project) {
-    throw new Error("Project ID is required");
-  }
+  if (!project_id) throw new Error("Project ID is required");
 
-  if (!budgetData.category || !budgetData.allocated_amount) {
+  if (!budgetData.budget_line_code ||
+      !budgetData.budget_line_name ||
+      !budgetData.budget_line_amount ||
+      !budgetData.budget_line_description) {
     throw new Error("All budget fields are required");
   }
 
-  if (budgetData.allocated_amount <= 0) {
-    throw new Error("Allocated amount must be greater than 0");
-  }
+  // 1) Fetch existing budgets once
+  const existingBudgets = await getBudgets({ projectId: project_id });
 
-  if (budgetData.category === "") {
-    throw new Error("Category is required");
-  }
-  const existingBudgets = await getBudgets({ projectId: project });
-  if (!Array.isArray(existingBudgets)) {
-    throw new Error("Failed to get existing budgets");
-  }
-  const existingBudgetAmount = existingBudgets.reduce((sum, budget) => sum + budget.allocated_amount, 0);
-  if (existingBudgetAmount + budgetData.allocated_amount > project.total_budget) {
+  const existingAmount = existingBudgets.reduce(
+    (sum, b) => sum + b.budget_line_amount,
+    0
+  );
+
+  // 2) Compare with total_budget passed from frontend
+  if (existingAmount + budgetData.budget_line_amount > budgetData.total_budget) {
     throw new Error("Total allocated amount cannot exceed project budget");
   }
 
-  try {
-    const response = await api.post(
-      `/projects/${project}/budgets?projectId=${project}`,
+   const response = await api.post(
+      `/projects/${project_id}/budgets?projectId=${project_id}`,
       {
-        category: budgetData.category,
-        allocated_amount: budgetData.allocated_amount, 
+        budget_line_code: budgetData.budget_line_code,
+        budget_line_name: budgetData.budget_line_name,
+        budget_line_amount: budgetData.budget_line_amount,
+        budget_line_description: budgetData.budget_line_description,
       }
     );
     return response.data;
-  } catch (error) {
-    console.error("Create budget error:", error.response?.data || error);
-    throw error;
-  }
 };
 
 

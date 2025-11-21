@@ -1,11 +1,16 @@
 import api from "../config/api";
 export const getDonors = async () => {
     const response = await api.get("/donors");
-    return response.data;
+    return  response.data;
 };
 
 export const getDonorById = async (id) => {
-    const response = await api.get(`/donors/${id}`);
+    const token = localStorage.getItem("token");    
+    const response = await api.get(`/donors/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
     return response.data;
 };
 

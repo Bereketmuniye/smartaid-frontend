@@ -21,7 +21,6 @@ api.interceptors.request.use(
     }
 );
 
-// Response Interceptor: Handle global errors, e.g., 401 Unauthorized
 api.interceptors.response.use(
     (response) => response,
     (error) => {

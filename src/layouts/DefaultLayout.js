@@ -4,7 +4,7 @@ import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import Footer from "../components/common/Footer";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import { useAuth } from "../hooks/useAuth"; 
+import { useAuth } from "../contexts/AuthContext"; 
 import "../assets/styles/layout/_defaultLayout.scss"; 
 
 const DefaultLayout = () => {

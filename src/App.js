@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import { AuthProvider } from "./hooks/useAuth";
+import { AuthProvider } from "./contexts/AuthContext";
 import DefaultLayout from "./layouts/DefaultLayout";
 
 import LandingPage from "./pages/home/LandingPage";
@@ -16,6 +16,7 @@ import UserListPage from "./pages/users/UserListPage";
 import DonorListPage from "./pages/donors/DonorListPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ActivityListPage from "./pages/activity/ActivityListPage";
+import ExpenseListPage from "./pages/expense/ExpenseListPage";
 
 function App() {
     return (
@@ -52,10 +53,11 @@ function App() {
 
                     <Route element={<DefaultLayout />}>
                         <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/donors" element={<DonorListPage />} />
+                        <Route path="/projects" element={<ProjectListPage />} />
                         <Route path="/ngos" element={<NgoListPage />} />
                         <Route path="/activities" element={<ActivityListPage />} />
-                        <Route path="/projects" element={<ProjectListPage />} />
-                        <Route path="/donors" element={<DonorListPage />} />
+                        <Route path="/expenses" element={<ExpenseListPage />} />
                         <Route
                             path="/projects/:id"
                             element={<ProjectDetailPage />}

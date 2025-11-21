@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 import { getProjects } from "../../services/projectService";
 import { getNGOs } from "../../services/ngoService";
 import { getDonors } from "../../services/donorService";
@@ -36,9 +36,9 @@ const DashboardPage = () => {
                     getNGOs(),
                     getDonors(),
                 ]);
-                setTotalProjects(projectsRes.length);
-                setActiveNgos(ngosRes.length);
-                setTotalDonors(donorsRes.length);
+                setTotalProjects(projectsRes.count);
+                setActiveNgos(ngosRes.count);
+                setTotalDonors(donorsRes.count);
             } catch (err) {
                 setError(
                     "Failed to load dashboard data. Please try refreshing."
@@ -83,7 +83,7 @@ const DashboardPage = () => {
                 <div className="welcome-section">
                     <p className="welcome-text">
                         Welcome, <span className="user-name">{user.name}</span>{" "}
-                        ({user.role})!
+                        ({user.role.name})!
                     </p>
                 </div>
             )}

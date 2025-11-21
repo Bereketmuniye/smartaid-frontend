@@ -38,8 +38,33 @@ export const updateUser = async (id, userData) => {
 };
 
 export const activateUser = async (id) => {
-    const response = await api.put(`/users/${id}/activate`);
+    const token = localStorage.getItem("token");
+    if (token) {
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+    try {
+    const response = await api.put(`/users/activate/${id}`);
     return response.data;
+    } catch (error) {
+        console.error("Activate user error:", error.response?.data || error);
+        throw error;
+    }
 };
 
-// ... other CRUD operations for users
+export const deactivateUser = async (id) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+    try {
+      const payload = {
+        status: "inactive",
+      };
+    const response = await api.put(`/users/deactivate/${id}`, payload);
+    return response.data;
+    } catch (error) {
+        console.error("Deactivate user error:", error.response?.data || error);
+        throw error;
+    }
+};
+

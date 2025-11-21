@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import InputField from "../../components/forms/InputField";
 import Button from "../../components/common/Button";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");

@@ -6,16 +6,21 @@ import {
     FaHandsHelping,
     FaUserFriends,
     FaProjectDiagram,
+    FaAngleDoubleUp,
 } from "react-icons/fa";
+import { useAuth } from "../../contexts/AuthContext"; 
 
 const Sidebar = () => {
+    const { user } = useAuth();
     const links = [
         { to: "/dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
-        { to: "/ngos", label: "NGOs", icon: <FaHandsHelping /> },
+        { to: "/donors", label: "Donors", icon: <FaUserFriends /> },
         { to: "/projects", label: "Projects", icon: <FaProjectDiagram /> },
-        { to: "/donors", label: "Donors", icon: <FaUserFriends /> }, 
-        { to: "/users", label: "Users", icon: <FaUsers /> },
+        { to: "/ngos", label: "NGOs", icon: <FaHandsHelping /> },
+        { to: "/expenses", label: "Expenses", icon: <FaAngleDoubleUp /> },
+        ...(user?.role === "admin" ? [{ to: "/users", label: "Users", icon: <FaUsers /> }] : [])
     ];
+
 
     return (
         <aside className="sidebar">

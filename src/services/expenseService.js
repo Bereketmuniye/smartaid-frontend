@@ -35,3 +35,8 @@ export const updateExpense = async (id, expenseData) => {
     });
     return response.data;
 }
+
+export const getCurrentExpense = async () => {
+    const response = await api.get("/expenses/current");
+    return response.data;
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUsers, FaSignOutAlt } from "react-icons/fa";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Header = () => {
 
@@ -23,7 +23,6 @@ const Header = () => {
                 </button>
             </nav>
 
-            {/* Inline styles for demonstration; can move to CSS file */}
             <style>
                 {`
                 .header {

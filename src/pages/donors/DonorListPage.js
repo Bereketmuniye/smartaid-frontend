@@ -8,8 +8,10 @@ import Modal from "../../components/common/Modal";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
 import "./DonorListPage.css";
+import { useAuth } from "../../contexts/AuthContext";
 
 const DonorListPage = () => {
+  const { user } = useAuth();
   const [donors, setDonors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -18,8 +20,13 @@ const DonorListPage = () => {
   const [currentDonor, setCurrentDonor] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
-    contact: "",
+    level1: "",
+    level2: "",
+    donor_reporting_category: "",
+    budget_heading: "",
+    amount: "",
     donor_type: "",
+    user: "",
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -27,7 +34,7 @@ const DonorListPage = () => {
     try {
       setError("");
       const data = await getDonors();
-      setDonors(data);
+      setDonors(data.data);
     } catch (err) {
       setError("Failed to fetch donors.");
       console.error(err);
@@ -40,7 +47,7 @@ const DonorListPage = () => {
     fetchDonors();
   }, []);
 
-  const resetForm = () => setFormData({ name: "", contact: "", donor_type: "" });
+  const resetForm = () => setFormData({ name: "", level1: "", level2: "", donor_reporting_category: "", budget_heading: "", amount: "", donor_type: "", user: "" });
 
   const handleOpenAdd = () => {
     resetForm();
@@ -51,20 +58,33 @@ const DonorListPage = () => {
     setCurrentDonor(donor);
     setFormData({
       name: donor.name || "",
-      contact: donor.contact || "",
+      level1: donor.level1 || "",
+      level2: donor.level2 || "",
+      donor_reporting_category: donor.donor_reporting_category || "",
+      budget_heading: donor.budget_heading || "",
+      amount: donor.amount || "",
       donor_type: donor.donor_type || "",
+      user: donor.user || "",
     });
     setShowEditModal(true);
   };
 
   const handleSubmitAdd = async () => {
-    if (!formData.name.trim() || !formData.contact.trim() || !formData.donor_type.trim()) {
+    if (!formData.name || !formData.level1 || !formData.level2 || !formData.donor_reporting_category || !formData.budget_heading || !formData.amount || !formData.donor_type) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    if (typeof formData.name !== 'string' || typeof formData.level1 !== 'string' || typeof formData.level2 !== 'string' || typeof formData.donor_reporting_category !== 'string' || typeof formData.budget_heading !== 'string' || typeof formData.amount !== 'string' || typeof formData.donor_type !== 'string') {
       toast.error("Please fill in all fields");
       return;
     }
     setSubmitting(true);
     try {
-      await createDonor(formData);
+      const dataToSend = {
+        ...formData,
+        user: user?._id,
+      };
+      await createDonor(dataToSend);
       toast.success("Donor created successfully!");
       setShowAddModal(false);
       fetchDonors();
@@ -120,7 +140,11 @@ const DonorListPage = () => {
                 <tr>
                   <th>#</th>
                   <th>Name</th>
-                  <th>Contact</th>
+                  <th>Level 1</th>
+                  <th>Level 2</th>
+                  <th>Donor Reporting Category</th>
+                  <th>Budget Heading</th>
+                  <th>Amount</th>
                   <th>Type</th>
                   <th>Created At</th>
                   <th>Actions</th>
@@ -135,7 +159,11 @@ const DonorListPage = () => {
                         {donor.name}
                       </Link>
                     </td>
-                    <td>{donor.contact || "-"}</td>
+                    <td>{donor.level1 || "-"}</td>
+                    <td>{donor.level2 || "-"}</td>
+                    <td>{donor.donor_reporting_category || "-"}</td>
+                    <td>{donor.budget_heading || "-"}</td>
+                    <td>{donor.amount || "-"}</td>
                     <td>
                       <span className={`type-badge type-${(donor.donor_type || "individual").toLowerCase()}`}>
                         {donor.donor_type ? donor.donor_type.charAt(0).toUpperCase() + donor.donor_type.slice(1) : "Individual"}
@@ -164,9 +192,24 @@ const DonorListPage = () => {
           </div>
         )}
 
+       
         {/* Add Modal */}
         <Modal open={showAddModal} title="Add New Donor" onClose={() => setShowAddModal(false)}>
           <form onSubmit={(e) => { e.preventDefault(); handleSubmitAdd(); }} className="modal-form">
+            <input
+              type="text"
+              placeholder="Level 1"
+              value={formData.level1}
+              onChange={(e) => setFormData({ ...formData, level1: e.target.value })}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Level 2"
+              value={formData.level2}
+              onChange={(e) => setFormData({ ...formData, level2: e.target.value })}
+              required
+            />
             <input
               type="text"
               placeholder="Donor Name"
@@ -176,9 +219,23 @@ const DonorListPage = () => {
             />
             <input
               type="text"
-              placeholder="Contact (Email / Phone)"
-              value={formData.contact}
-              onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+              placeholder="Donor Reporting Category"
+              value={formData.donor_reporting_category}
+              onChange={(e) => setFormData({ ...formData, donor_reporting_category: e.target.value })}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Budget Heading"
+              value={formData.budget_heading}
+              onChange={(e) => setFormData({ ...formData, budget_heading: e.target.value })}
+              required
+            />
+            <input
+              type="number"
+              placeholder="Amount"
+              value={formData.amount}
+              onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               required
             />
             <select
@@ -210,6 +267,27 @@ const DonorListPage = () => {
           <form onSubmit={(e) => { e.preventDefault(); handleSubmitEdit(); }} className="modal-form">
             <input
               type="text"
+              placeholder="User"
+              value={formData.user}
+              onChange={(e) => setFormData({ ...formData, user: e.target.value })}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Level 1"
+              value={formData.level1}
+              onChange={(e) => setFormData({ ...formData, level1: e.target.value })}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Level 2"
+              value={formData.level2}
+              onChange={(e) => setFormData({ ...formData, level2: e.target.value })}
+              required
+            />
+            <input
+              type="text"
               placeholder="Donor Name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -217,9 +295,23 @@ const DonorListPage = () => {
             />
             <input
               type="text"
-              placeholder="Contact (Email / Phone)"
-              value={formData.contact}
-              onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+              placeholder="Donor Reporting Category"
+              value={formData.donor_reporting_category}
+              onChange={(e) => setFormData({ ...formData, donor_reporting_category: e.target.value })}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Budget Heading"
+              value={formData.budget_heading}
+              onChange={(e) => setFormData({ ...formData, budget_heading: e.target.value })}
+              required
+            />
+            <input
+              type="number"
+              placeholder="Amount"
+              value={formData.amount}
+              onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               required
             />
             <select

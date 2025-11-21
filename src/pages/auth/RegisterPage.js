@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import InputField from "../../components/forms/InputField";
 import Button from "../../components/common/Button";
-import { registerUser } from "../../services/userService";
+import { registerUser } from "../../services/authService";
 
 const RegisterPage = () => {
     const [formData, setFormData] = useState({
