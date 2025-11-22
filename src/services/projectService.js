@@ -1,4 +1,3 @@
-// src/services/projectService.js
 import api from "../config/api";
 
 export const getProjects = async () => {
@@ -68,7 +67,7 @@ export const getActivities = async (projectId) => {
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
     try {
-    const response = await api.get(`/projects/${projectId}/activities`, {
+    const response = await api.get(`/projects/activities/${projectId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json", 
@@ -135,26 +134,26 @@ export const updateActivity = async (projectId, activityId, activityData) => {
         throw error;
     }
 };
-export const getBudgets = async (params = {}) => {
+
+
+export const getBudgets = async (projectId) => {
     const token = localStorage.getItem("authToken");
     if (token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
     try {
-    const response = await api.get(`/projects/${params.projectId}/budgets`, {
+    const response = await api.get(`/projects/budgets/${projectId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json", 
         },
-        params,
     });
     return response.data;
     } catch (error) {
-        console.error("Get budgets error:", error?.message || error);
+        console.error(`Failed to get activities for project ${projectId}:`, error);
         throw error;
     }
 };
-
 
 export const createBudget = async (budgetData) => {
   const token = localStorage.getItem("authToken");

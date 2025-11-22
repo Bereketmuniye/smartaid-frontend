@@ -6,14 +6,13 @@ import {
   createProject,
   updateProject,
   createActivity,
-  createBudget,
-  getBudgets,
 } from "../../services/projectService";
 import { getDonors } from "../../services/donorService";
 import { getUsers } from "../../services/userService";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import Button from "../../components/common/Button";
 import Modal from "../../components/common/Modal";
+import { getBudgets, createBudget } from "../../services/budgetService";
 import {
   FaEdit,
   FaPlus,
@@ -164,7 +163,7 @@ const ProjectListPage = () => {
       return;
     }
 
-    const budgets = await getBudgets({ projectId: currentProject._id });
+    const budgets = await getBudgets(currentProject._id);
     const newTotal = budgets.reduce((s, b) => s + +b.budget_line_amount, 0) + +budgetForm.budget_line_amount;
 
     if (newTotal > currentProject.total_budget) {

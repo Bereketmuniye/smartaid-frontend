@@ -138,38 +138,38 @@ const DonorListPage = () => {
             <table className="donor-table">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Level 1</th>
-                  <th>Level 2</th>
-                  <th>Donor Reporting Category</th>
-                  <th>Budget Heading</th>
-                  <th>Amount</th>
-                  <th>Type</th>
-                  <th>Created At</th>
-                  <th>Actions</th>
+                  <th style={{ width: "50px" }}>#</th>
+                  <th style={{ width: "400px" }}>Name</th>
+                  <th style={{ width: "400px" }}>Level 1</th>
+                  <th style={{ width: "400px" }}>Level 2</th>
+                  <th style={{ width: "400px" }}>Donor Reporting Category</th>
+                  <th style={{ width: "400px" }}>Budget Heading</th>
+                  <th style={{ width: "400px" }}>Amount</th>
+                  <th style={{ width: "400px" }}>Type</th>
+                  <th style={{ width: "400px" }}>Created At</th>
+                  <th style={{ width: "400px" }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {donors.map((donor, index) => (
                   <tr key={donor._id}>
                     <td>{index + 1}</td>
-                    <td>
+                    <td style={{ textTransform: "capitalize", width: "400px" }}>
                       <Link to={`/donors/${donor._id}`} className="donor-link">
                         {donor.name}
                       </Link>
                     </td>
-                    <td>{donor.level1 || "-"}</td>
-                    <td>{donor.level2 || "-"}</td>
-                    <td>{donor.donor_reporting_category || "-"}</td>
-                    <td>{donor.budget_heading || "-"}</td>
-                    <td>{donor.amount || "-"}</td>
-                    <td>
+                    <td style={{ textTransform: "capitalize", width: "300px" }}>{donor.level1 || "-"}</td>
+                    <td style={{ textTransform: "capitalize", width: "400px" }}>{donor.level2 || "-"}</td>
+                    <td style={{ textTransform: "capitalize", width: "300px" }}>{donor.donor_reporting_category || "-"}</td>
+                    <td style={{ textTransform: "capitalize", width: "300px" }}>{donor.budget_heading || "-"}</td>
+                    <td style={{ textTransform: "capitalize", width: "300px" }}>{donor.amount || "-"}</td>
+                    <td style={{ textTransform: "capitalize", width: "300px" }}>
                       <span className={`type-badge type-${(donor.donor_type || "individual").toLowerCase()}`}>
                         {donor.donor_type ? donor.donor_type.charAt(0).toUpperCase() + donor.donor_type.slice(1) : "Individual"}
                       </span>
                     </td>
-                    <td>
+                    <td style={{ textTransform: "capitalize", width: "200px" }}>
                       {new Date(donor.createdAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",
