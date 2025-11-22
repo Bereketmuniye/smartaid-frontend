@@ -3,6 +3,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { getProjects } from "../../services/projectService";
 import { getNGOs } from "../../services/ngoService";
 import { getDonors } from "../../services/donorService";
+import { getExpenses } from "../../services/expenseService";
 
 import {
     BarChart,
@@ -26,19 +27,22 @@ const DashboardPage = () => {
     const [totalDonors, setTotalDonors] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [totalExpenses, setTotalExpenses] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setError(null);
-                const [projectsRes, ngosRes, donorsRes] = await Promise.all([
+                const [projectsRes, ngosRes, donorsRes, expensesRes] = await Promise.all([
                     getProjects(),
                     getNGOs(),
                     getDonors(),
+                    getExpenses(),
                 ]);
                 setTotalProjects(projectsRes.count);
                 setActiveNgos(ngosRes.count);
                 setTotalDonors(donorsRes.count);
+                setTotalExpenses(expensesRes.count);
             } catch (err) {
                 setError(
                     "Failed to load dashboard data. Please try refreshing."
@@ -56,6 +60,7 @@ const DashboardPage = () => {
         { name: "Projects", value: totalProjects },
         { name: "NGOs", value: activeNgos },
         { name: "Donors", value: totalDonors },
+        { name: "Expenses", value: totalExpenses },
     ];
 
     const COLORS = ["#007BFF", "#28A745", "#FFC107"];
@@ -117,6 +122,15 @@ const DashboardPage = () => {
                     <h3 className="stat-title">Total Donors</h3>
                     <p className="stat-number" style={{ color: COLORS[2] }}>
                         {totalDonors}
+                    </p>
+                </div>
+                <div
+                    className="stat-card"
+                    style={{ borderLeft: `4px solid ${COLORS[3]}` }}
+                >
+                    <h3 className="stat-title">Total Expenses</h3>
+                    <p className="stat-number" style={{ color: COLORS[3] }}>
+                        {totalExpenses}
                     </p>
                 </div>
             </div>
