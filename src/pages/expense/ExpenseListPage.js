@@ -257,7 +257,7 @@ const ExpenseListPage = () => {
                     <td>{getNameById(allActivities, expense.activity)}</td>
                     <td>{getNameById(allBudgets, expense.budget, "budget_line_name")}</td>
                     <td>{expense.expense_date?.split("T")[0] || "-"}</td>
-                    <td>{expense.amount}</td>
+                    <td>{expense.amount} {projects.find(p => p._id === expense.project)?.currency}</td>
                     <td>{expense.remaining_balance_to_spend}</td>
                     <td>{expense.re_forcast}</td>
                     <td>{expense.over_underspend}</td>

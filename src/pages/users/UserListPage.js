@@ -205,10 +205,8 @@ const UserListPage = () => {
                 {users.map((user, index) => (
                   <tr key={user._id}>
                     <td>{index + 1}</td>
-                    <td>
-                      <Link to={`/users/${user._id}`} className="user-link">
-                        {user.name}
-                      </Link>
+                    <td className="user-name">
+                      {user.name}
                     </td>
                     <td>{user.email}</td>
                     <td>

@@ -18,7 +18,7 @@ const Sidebar = () => {
         { to: "/projects", label: "Projects", icon: <FaProjectDiagram /> },
         { to: "/ngos", label: "NGOs", icon: <FaHandsHelping /> },
         { to: "/expenses", label: "Expenses", icon: <FaAngleDoubleUp /> },
-        ...(user?.role === "admin" ? [{ to: "/users", label: "Users", icon: <FaUsers /> }] : [])
+        { to: "/users", label: "Users", icon: <FaUsers /> }
     ];
 
 
